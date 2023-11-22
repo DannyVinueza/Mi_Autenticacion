@@ -4,7 +4,8 @@ import {
   FormsModule, 
   FormBuilder,
   FormGroup,
-  Validators
+  Validators,
+  ReactiveFormsModule
 } from '@angular/forms';
 
 import{
@@ -23,12 +24,29 @@ import { AuthService } from 'src/app/services/auth.service';
   selector: 'app-login',
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
+  standalone: true,
+  imports:[IonicModule,CommonModule,FormsModule, ReactiveFormsModule],
 })
 export class LoginPage implements OnInit {
+  credentials!: FormGroup;
 
-  constructor() { }
+  constructor(
+    private fb:FormBuilder,
+    private loadController:LoadingController,
+    private alertController:AlertController,
+    private router: Router,
+    private authService:AuthService,
+    private toastCtrl:ToastController
+  ) { }
+
+  public get email(){return this.credentials.get("email")}
+  public get password(){return this.credentials.get("password")}
 
   ngOnInit() {
+    this.credentials=this.fb.group({
+      email:['', Validators.required, Validators.email],
+      password:['', Validators.required, Validators.min(6)]
+    });
   }
 
 }
